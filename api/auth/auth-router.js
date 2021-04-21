@@ -7,10 +7,9 @@ const Users = require('../users/users-model')
 
 router.post("/register", validateRoleName, (req, res, next) => {
   let user = req.body;
-  // const rounds = process.env.BCRYPT_ROUNDS || 8;
-  // const hash = bcrypt.hashSync(user.password, rounds);
-  // user.password = hash
-  // user.role_name = req.role_name
+  const hash = bcrypt.hashSync(user.password, 8);
+  user.password = hash
+
   Users.add(user)
   .then(saved => {
       res.status(201).json(saved[0]);
@@ -42,11 +41,11 @@ router.post("/login", checkUsernameExists, async (req, res, next) => {
   try{
       const {username, password} = req.body;
       const [user] = await Users.findBy({username})
-      if(user ){
+      if(user && bcrypt.compareSync(password, user.password) ){
         const token = makeToken(user)
         res.status(200).json({message: `${username} is back!`, token})
       }else{
-        res.status(401).json({message: 'You need to register first.'})
+        res.status(401).json({message: 'Invalid credentials'})
       }
     }catch(err){
       next(err)

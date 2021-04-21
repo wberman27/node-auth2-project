@@ -104,7 +104,7 @@ const validateRoleName = (req, res, next) => {
   */
     const {role_name} = req.body;
     if(!role_name || role_name.trim() === ""){
-      req.role_name = "student"
+      req.role_name = "student";
       next()
     }else{
       if(role_name.trim() === "admin"){

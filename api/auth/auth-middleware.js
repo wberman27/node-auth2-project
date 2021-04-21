@@ -54,7 +54,7 @@ const only = role_name => (req, res, next) => {
 }
 
 
-const checkUsernameExists = (req, res, next) => {
+const checkUsernameExists = async (req, res, next) => {
   /*
     If the username in req.body does NOT exist in the database
     status 401
@@ -62,24 +62,21 @@ const checkUsernameExists = (req, res, next) => {
       "message": "Invalid credentials"
     }
   */
-    Users.find()
-    .then(user =>{
-      const usersArray = []
-      user.map(u =>{
+    try{
+      let usersArray = []
+      const userData = await Users.find()
+      userData.map(u =>{
         usersArray.push(u.username)
         return usersArray;
       })
-    })
-    .then(array =>{
-      if(array.includes(req.body.username)){
+      if(usersArray.includes(req.body.username)){
         next()
       }else{
         res.status(401).json({message: "Invalid credentials"})
       }
-    })
-    .catch(err =>{
+    }catch(err){
       next(err)
-    })
+    }
 }
 
 

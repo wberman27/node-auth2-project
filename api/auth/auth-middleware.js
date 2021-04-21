@@ -24,7 +24,7 @@ const restricted = (req, res, next) => {
     if(!token){
       res.status(401).json({message: "Token required"})
     }else{
-      jwt.verift(token, jwtSecret, (err, decoded) =>{
+      jwt.verify(token, jwtSecret, (err, decoded) =>{
         if(err){
           res.status(401).json({message: "Token invalid"})
         }else{
@@ -103,8 +103,8 @@ const validateRoleName = (req, res, next) => {
     }
   */
     const {role_name} = req.body;
-    if(!role_name || role_name.trim() === ""){
-      req.role_name = "student";
+    if(!role_name || role_name === ""){
+      req.body.role_name = "student";
       next()
     }else{
       if(role_name.trim() === "admin"){
@@ -113,7 +113,7 @@ const validateRoleName = (req, res, next) => {
         if(role_name.trim().length > 32){
           res.status(422).json({message: "Role name can not be longer than 32 chars"})
         }else{
-          req.role_name = role_name.trim()
+          req.body.role_name = role_name.trim()
           next()
         }
       }

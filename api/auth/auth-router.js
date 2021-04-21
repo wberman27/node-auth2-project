@@ -13,7 +13,7 @@ router.post("/register", validateRoleName, (req, res, next) => {
   // user.role_name = req.role_name
   Users.add(user)
   .then(saved => {
-      res.status(201).json(saved);
+      res.status(201).json(saved[0]);
   })
   .catch(next);
 });
